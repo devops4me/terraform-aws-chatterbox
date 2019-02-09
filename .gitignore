@@ -9,9 +9,5 @@
 *.tfstate
 *.tfstate.*
 
-# Until the SSH public keys are removed do not check me in.
-cloud-config.yaml
-
-
 # When terraform crashes it can leave this file behind.
 crash.log

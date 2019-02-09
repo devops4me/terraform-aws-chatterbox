@@ -1,23 +1,4 @@
 
-/*
- | --
- | -- This elasticsearch instance will be created in an existing VPC but
- | -- in its own subnets and networking components.
- | --
- | -- Visit the [module documentation](../README.md) to better understand
- | -- the values that are required for these variables.
- | --
-*/
-locals
-{
-    ecosystem_id             = "chatterbox"
-    the_vpc_id               = "vpc-8fcf57e4"
-    the_vpc_cidr             = "10.0.0.0/16"
-    the_subnets_max          = "4"
-    the_num_existing_subnets = "6"
-}
-
-
 ### ---> ##################### <--- ### || < ####### > || ###
 ### ---> --------------------- <--- ### || < ------- > || ###
 ### ---> Instance Layer Module <--- ### || < Layer I > || ###
@@ -67,12 +48,12 @@ resource aws_instance machine
 */
 module sub-network
 {
-    source                  = "github.com/devops4me/terraform-aws-sub-network"
-
-    in_vpc_id               = "${ local.the_vpc_id }"
-    in_vpc_cidr             = "${ local.the_vpc_cidr }"
-    in_subnets_max          = "${ local.the_subnets_max }"
-    in_num_existing_subnets = "${ local.the_num_existing_subnets }"
+    source            = "github.com/devops4me/terraform-aws-sub-network"
+    in_vpc_id         = "${ local.the_vpc_id }"
+    in_vpc_cidr       = "${ local.the_vpc_cidr }"
+    in_net_gateway_id = "${ local.the_net_gateway_id }"
+    in_subnets_max    = "${ local.the_subnets_max }"
+    in_subnet_offset  = "${ local.the_subnet_offset }"
 
     in_num_public_subnets   = 1
     in_num_private_subnets  = 0
@@ -92,7 +73,7 @@ module security-group
 {
     source      = "github.com/devops4me/terraform-aws-security-group"
     in_ingress  = [ "http", "https", "ssh" ]
-    in_vpc_id   = "${ module.sub-network.out_vpc_id }"
+    in_vpc_id   = "${ local.the_vpc_id }"
 
     in_ecosystem_name  = "${ local.ecosystem_id }"
     in_tag_timestamp   = "${ module.resource-tags.out_tag_timestamp }"
@@ -119,24 +100,6 @@ module s3-instance-profile
 
 /*
  | --
- | -- The cloud config yaml is responsible for the configuration management
- | -- of the ec2 instance (or instances).
- | --
- | -- The documentation for cloud-config directives and their parameters can
- | -- be found at this url below.
- | --
- | --
- | --     https://cloudinit.readthedocs.io/en/latest/index.html
- | --
-*/
-data template_file cloud_config
-{
-    template = "${ file( "${path.module}/cloud-config.yaml" ) }"
-}
-
-
-/*
- | --
  | -- Remember the AWS resource tags! Using this module, every
  | -- infrastructure component is tagged to tell you 5 things.
  | --
@@ -150,24 +113,4 @@ data template_file cloud_config
 module resource-tags
 {
     source = "github.com/devops4me/terraform-aws-resource-tags"
-}
-
-
-data aws_ami ubuntu-1804
-{
-    most_recent = true
-
-    filter
-    {
-        name   = "name"
-        values = ["ubuntu/images/hvm-ssd/ubuntu-bionic-18.04-amd64-server-*"]
-    }
-
-    filter
-    {
-        name   = "virtualization-type"
-        values = [ "hvm" ]
-    }
-
-    owners = ["099720109477"]
 }
