@@ -2,17 +2,18 @@
 ######## Mandatory Variables ########
 ######## ################### ########
 
-variable in_vpc_id { description = "The ID of the existing VPC in which to create the subnet network." }
-variable in_vpc_cidr { description = "The CIDr block defining the range of IP addresses allocated to this VPC." }
-variable in_subnets_max { description = "Two to the power of in_subnets_max is the ma number of subnets carvable from the VPC." }
+variable in_vpc_id        { description = "The ID of the existing VPC in which to create the subnet network." }
+variable in_vpc_cidr      { description = "The CIDr block defining the range of IP addresses allocated to this VPC." }
+variable in_subnets_max   { description = "Two to the power of in_subnets_max is the ma number of subnets carvable from the VPC." }
 variable in_subnet_offset { description = "The number of subnets already carved out of the existing VPC to skip over." }
-variable in_gateway_id { description = "The internet gateway ID of the existing VPC." }
-variable in_ecosystem_id { description = "Creational name stamp denoting the class of this eco-system." }
-variable in_ssh_public_key { description = "The public SSH key for accessing the secure shell of the instance." }
 
-########## ########################### ######
-########## The terraform data objects. ######
-########## ########################### ######
+variable in_gateway_id     { description = "The internet gateway ID of the existing VPC for routing traffic." }
+variable in_ssh_public_key { description = "The public SSH key for accessing the secure shell of the instance." }
+variable in_ecosystem_name { description = "Creational name stamp denoting the class of this eco-system." }
+
+######## ########################### ######
+######## The terraform data objects. ######
+######## ########################### ######
 
 /*
  | --
