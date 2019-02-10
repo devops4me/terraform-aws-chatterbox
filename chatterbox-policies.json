@@ -1,11 +1,16 @@
 {
-   "Version": "2012-10-17",
-   "Statement": [
-      {
-         "Sid": "AllowAllCloudFrontPermissions",
-         "Effect": "Allow",
-         "Action": ["cloudfront:*"],
-         "Resource": "*"
-      }
-   ]
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Effect": "Allow",
+            "Action": "s3:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Sid": "AllowAllCloudFrontPermissions",
+            "Action": ["cloudfront:*"],
+            "Resource": "*"
+	}
+    ]
 }

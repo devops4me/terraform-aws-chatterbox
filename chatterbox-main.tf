@@ -5,29 +5,46 @@
 ### ---> --------------------- <--- ### || < ------- > || ###
 ### ---> ##################### <--- ### || < ####### > || ###
 
-resource aws_instance machine
+# -------------------> resource aws_instance machine
+# -------------------> {
+# ------------------->     instance_type          = "m4.large"
+# ------------------->     ami                    = "${ data.aws_ami.ubuntu-1804.id }"
+# ------------------->     subnet_id              = "${ element ( module.sub-network.out_public_subnet_ids, 0 ) }"
+# ------------------->     vpc_security_group_ids = [ "${ module.security-group.out_security_group_id }" ]
+# ------------------->     iam_instance_profile   = "${ module.s3-instance-profile.out_profile_name }"
+# ------------------->     user_data              = "${ data.template_file.cloud_config.rendered }"
+
+# ------------------->     root_block_device
+# ------------------->     {
+# ------------------->         volume_size = "64"
+# ------------------->     }
+
+# ------------------->     tags
+# ------------------->     {
+# ------------------->         Name     = "ec2-${ local.ecosystem_id }-${ module.resource-tags.out_tag_timestamp }"
+# ------------------->         Class    = "${ local.ecosystem_id }"
+# ------------------->         Instance = "${ local.ecosystem_id }-${ module.resource-tags.out_tag_timestamp }"
+# ------------------->         Desc     = "AI server instance being used by Stathis for artificial intelligence ${ module.resource-tags.out_tag_description }"
+# ------------------->     }
+# -------------------> }
+
+module instance-cluster
 {
-    instance_type          = "m4.large"
-    ami                    = "${ data.aws_ami.ubuntu-1804.id }"
-    subnet_id              = "${ element ( module.sub-network.out_public_subnet_ids, 0 ) }"
-    vpc_security_group_ids = [ "${ module.security-group.out_security_group_id }" ]
-    iam_instance_profile   = "${ module.s3-instance-profile.out_profile_name }"
-    user_data              = "${ data.template_file.cloud_config.rendered }"
+    source                  = "github.com/devops4me/terraform-aws-ec2-instance-cluster"
 
-    root_block_device
-    {
-        volume_size = "64"
-    }
+    in_node_count           = "1"
+    in_user_data            = "${ data.template_file.cloud_config.rendered }"
+    in_iam_instance_profile = "${ module.ec2-instance-profile.out_ec2_instance_profile }"
+    in_ssh_public_key       = "${ var.in_ssh_public_key }"
 
-    tags
-    {
-        Name     = "ec2-${ local.ecosystem_id }-${ module.resource-tags.out_tag_timestamp }"
-        Class    = "${ local.ecosystem_id }"
-        Instance = "${ local.ecosystem_id }-${ module.resource-tags.out_tag_timestamp }"
-        Desc     = "AI server instance being used by Stathis for artificial intelligence ${ module.resource-tags.out_tag_description }"
-    }
+    in_ami_id               = "${ data.aws_ami.ubuntu-1804.id }"
+    in_subnet_ids           = [ "${ element ( module.sub-network.out_public_subnet_ids, 0 ) }" ]
+    in_security_group_ids   = [ "${ module.security-group.out_security_group_id }" ]
+
+    in_ecosystem_name       = "${ local.ecosystem_name }"
+    in_tag_timestamp        = "${ module.resource-tags.out_tag_timestamp }"
+    in_tag_description      = "${ module.resource-tags.out_tag_description }"
 }
-
 
 
 ### ---> ##################### <--- ### || < ####### > || ###
@@ -84,19 +101,18 @@ module security-group
 
 output public_ip_addresses
 {
-    value  = "${ aws_instance.machine.*.public_ip }"
+    value  = "${ module.instance-cluster.out_public_ip_addresses }"
 }
 
 
-module s3-instance-profile
+module ec2-instance-profile
 {
-    source = "github.com/devops4me/terraform-aws-s3-instance-profile"
-
-    in_ecosystem_name  = "${ local.ecosystem_id }"
+    source             = "github.com/devops4me/terraform-aws-ec2-instance-profile"
+    in_policy_stmts    = "${ data.template_file.iam_policy_stmts.rendered }"
+    in_ecosystem_name  = "${local.ecosystem_id}"
     in_tag_timestamp   = "${ module.resource-tags.out_tag_timestamp }"
     in_tag_description = "${ module.resource-tags.out_tag_description }"
 }
-
 
 /*
  | --

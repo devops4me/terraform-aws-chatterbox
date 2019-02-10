@@ -8,7 +8,7 @@ variable in_subnets_max { description = "Two to the power of in_subnets_max is t
 variable in_subnet_offset { description = "The number of subnets already carved out of the existing VPC to skip over." }
 variable in_gateway_id { description = "The internet gateway ID of the existing VPC." }
 variable in_ecosystem_id { description = "Creational name stamp denoting the class of this eco-system." }
-variable in_public_ssh_key { description = "The public SSH key for accessing the secure shell of the instance." }
+variable in_ssh_public_key { description = "The public SSH key for accessing the secure shell of the instance." }
 
 ########## ########################### ######
 ########## The terraform data objects. ######
@@ -29,6 +29,12 @@ variable in_public_ssh_key { description = "The public SSH key for accessing the
 data template_file cloud_config
 {
     template = "${ file( "${path.module}/cloud-config.yaml" ) }"
+}
+
+
+data template_file iam_policy_stmts
+{
+    template = "${ file( "${path.module}/chatterbox-policies.json" ) }"
 }
 
 
