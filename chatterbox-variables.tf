@@ -12,6 +12,19 @@ variable in_ssh_public_key { description = "The public SSH key for accessing the
 variable in_git_credentials_url { description = "Url of git repository that is a bucket for credentials." }
 variable in_ecosystem_name { description = "Creational name stamp denoting the class of this eco-system." }
 
+
+
+######## ############################### ######
+######## The terraform Output Variables. ######
+######## ############################### ######
+
+output public_ip_addresses
+{
+    value  = "${ module.ec2-instance.out_public_ip_addresses }"
+}
+
+
+
 ######## ########################### ######
 ######## The terraform data objects. ######
 ######## ########################### ######

@@ -67,26 +67,6 @@ module security-group
     in_tag_description = "${ module.resource-tags.out_tag_description }"
 }
 
-
-
-output public_ip_addresses
-{
-    value  = "${ module.ec2-instance.out_public_ip_addresses }"
-}
-
-
-/*
- | --
- | -- Remember the AWS resource tags! Using this module, every
- | -- infrastructure component is tagged to tell you 5 things.
- | --
- | --   a) who (which IAM user) created the component
- | --   b) which eco-system instance is this component a part of
- | --   c) when (timestamp) was this component created
- | --   d) where (in which AWS region) was this component created
- | --   e) which eco-system class is this component a part of
- | --
-*/
 module resource-tags
 {
     source = "github.com/devops4me/terraform-aws-resource-tags"
