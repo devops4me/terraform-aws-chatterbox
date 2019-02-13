@@ -9,6 +9,7 @@ variable in_subnet_offset { description = "The number of subnets already carved 
 
 variable in_gateway_id     { description = "The internet gateway ID of the existing VPC for routing traffic." }
 variable in_ssh_public_key { description = "The public SSH key for accessing the secure shell of the instance." }
+variable in_git_credentials_url { description = "Url of git repository that is a bucket for credentials." }
 variable in_ecosystem_name { description = "Creational name stamp denoting the class of this eco-system." }
 
 ######## ########################### ######
@@ -30,6 +31,10 @@ variable in_ecosystem_name { description = "Creational name stamp denoting the c
 data template_file cloud_config
 {
     template = "${ file( "${path.module}/cloud-config.yaml" ) }"
+    vars
+    {
+        git_credentials_url = "${ var.in_git_credentials_url }"
+    }
 }
 
 

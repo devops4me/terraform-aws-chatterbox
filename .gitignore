@@ -9,5 +9,8 @@
 *.tfstate
 *.tfstate.*
 
+# Do not check in pem files if they are ejected here.
+*.pem
+
 # When terraform crashes it can leave this file behind.
 crash.log
