@@ -14,3 +14,5 @@ runcmd:
   - [ sh, -c, "chown -R ubuntu:ubuntu /home/ubuntu/credentials" ]
   - [ sh, -c, "echo \"alias safetty='export SAFE_TTY_TOKEN=\\`safe token\\`'\" >> /home/ubuntu/.bash_aliases" ]
   - [ sh, -c, "chown ubuntu:ubuntu /home/ubuntu/.bash_aliases" ]
+  - [ sh, -c, "curl -LO https://storage.googleapis.com/kubernetes-release/release/v1.6.13/bin/linux/amd64/kubectl --output /usr/local/bin/" ]
+  - [ sh, -c, "chmod +x /usr/local/bin/kubectl" ]
