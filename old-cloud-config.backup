@@ -1,0 +1,21 @@
+#cloud-config
+
+package_update: true
+
+packages:
+ - python3-pip
+ - groff
+ - emacs25
+ - ruby-full
+
+runcmd:
+  - [ sh, -c, "pip3 install --upgrade awscli && pip3 --version && aws --version" ]
+  - [ sh, -c, "gem install safedb" ]
+  - [ sh, -c, "git clone ${safe_remote_db_id} /home/ubuntu/${safe_local_db_id}" ]
+  - [ sh, -c, "chown -R ubuntu:ubuntu /home/ubuntu/${safe_local_db_id}" ]
+  - [ sh, -c, "echo \"export SAFE_TTY_TOKEN=\\`safe token\\`\" >> /home/ubuntu/.bash_aliases" ]
+  - [ sh, -c, "echo \"safe init ${safe_book_name} ${safe_local_db_id}\" >> /home/ubuntu/.bash_aliases" ]
+  - [ sh, -c, "echo \"safe login ${safe_book_name} --password=${safe_book_password}\" >> /home/ubuntu/.bash_aliases" ]
+  - [ sh, -c, "chown ubuntu:ubuntu /home/ubuntu/.bash_aliases" ]
+  - [ sh, -c, "curl -L https://storage.googleapis.com/kubernetes-release/release/v1.6.13/bin/linux/amd64/kubectl --output /usr/local/bin/kubectl" ]
+  - [ sh, -c, "chmod +x /usr/local/bin/kubectl" ]

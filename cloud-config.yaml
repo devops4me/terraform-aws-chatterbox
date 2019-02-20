@@ -5,14 +5,23 @@ package_update: true
 packages:
  - python3-pip
  - groff
+ - libicu-dev
+ - tree
+ - emacs25
  - ruby-full
 
 runcmd:
   - [ sh, -c, "pip3 install --upgrade awscli && pip3 --version && aws --version" ]
-  - [ sh, -c, "gem install safedb" ]
-  - [ sh, -c, "git clone ${git_credentials_url} /home/ubuntu/credentials.db" ]
-  - [ sh, -c, "chown -R ubuntu:ubuntu /home/ubuntu/credentials.db" ]
-  - [ sh, -c, "echo \"alias safetty='export SAFE_TTY_TOKEN=\\`safe token\\`'\" >> /home/ubuntu/.bash_aliases" ]
-  - [ sh, -c, "chown ubuntu:ubuntu /home/ubuntu/.bash_aliases" ]
+  - [ sh, -c, "gem install --no-ri --no-rdoc filesize inifile net-ssh net-scp nokogiri" ]
+  - [ sh, -c, "gem install safedb --no-ri --no-rdoc" ]
+  - [ sh, -c, "git clone ${safe_remote_db_id} /home/ubuntu/${safe_local_db_id}" ]
+  - [ sh, -c, "chown -R ubuntu:ubuntu /home/ubuntu/${safe_local_db_id}" ]
+  - [ sh, -c, "git config --global user.name \"${dot_fullname}\"" ]
+  - [ sh, -c, "git config --global user.email \"${dot_email_address}\"" ]
+  - [ sh, -c, "git clone https://${dot_username}:${dot_password}@${dot_repo_path}.git /home/ubuntu/dot.platform" ]
+  - [ sh, -c, "chown -R ubuntu:ubuntu /home/ubuntu/dot.platform" ]
   - [ sh, -c, "curl -L https://storage.googleapis.com/kubernetes-release/release/v1.6.13/bin/linux/amd64/kubectl --output /usr/local/bin/kubectl" ]
   - [ sh, -c, "chmod +x /usr/local/bin/kubectl" ]
+  - [ sh, -c, "mkdir /usr/share/ca-certificates/company" ]
+  - [ sh, -c, "cp /home/ubuntu/dot.platform/plugin.modules/deploy.ecosys/company-root-certificate.crt /usr/share/ca-certificates/company/" ]
+  - [ sh, -c, "update-ca-certificates" ]

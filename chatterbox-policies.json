@@ -8,6 +8,11 @@
         },
         {
             "Effect": "Allow",
+            "Action": "iam:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
             "Sid": "AllowAllCloudFrontPermissions",
             "Action": ["cloudfront:*"],
             "Resource": "*"
